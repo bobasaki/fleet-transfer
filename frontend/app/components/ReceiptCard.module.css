@@ -1,0 +1,113 @@
+/* ReceiptCard — per-card label and multi-item layout. */
+
+.cardLabel {
+  font-size: 0.63rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+}
+
+.extractedWrapper {
+  margin-top: 0.625rem;
+}
+
+/* Multi-item category row */
+.multiItemRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-top: 0.375rem;
+  flex-wrap: wrap;
+}
+
+/* Category amount span (right side of multi-item row) */
+.multiItemAmount {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  /* color is dynamic: CAT_COLOR[item.category] */
+}
+
+.multiItemNative {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+/* Shared amount input width variants */
+.amountInputWide {
+  flex: 0 0 auto;
+  width: 96px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.amountInputNarrow {
+  flex: 0 0 auto;
+  width: 84px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.catSelectFixed {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 110px;
+}
+
+/* Amount row spans */
+.amountSpan {
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.amountLabel {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+.amountSpanFlex {
+  font-size: 0.875rem;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Multi-item category tag in amount section */
+.catTag {
+  font-size: 0.72rem;
+  margin-right: 0.25rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  /* color is dynamic: CAT_COLOR[item.category] */
+}
+
+.amountTotal {
+  font-size: 0.875rem;
+  color: var(--text);
+  margin-left: auto;
+}
+
+.amountTotalLabel {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  margin-right: 0.25rem;
+}
+
+.fxRateNote {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+/* Inline-block label for the "Kategorije" heading inside multi-item rows. */
+.multiSectionLabel {
+  display: block;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}

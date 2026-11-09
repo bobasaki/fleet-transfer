@@ -1,0 +1,67 @@
+/* TransferChrome — background grid, horizon glow, and page header. */
+
+.header {
+  position: relative;
+  z-index: 2;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 1rem 1.25rem 0.875rem;
+}
+
+/* Row inside header: pageShell width + flex between */
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-bottom: 0.25rem;
+}
+
+.brandName {
+  font-size: 0.55rem;
+  letter-spacing: 0.32em;
+  color: var(--red);
+  text-transform: uppercase;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  font-weight: 700;
+}
+
+.brandDivider {
+  display: inline-block;
+  width: 1px;
+  height: 10px;
+  background: var(--border-strong);
+}
+
+.brandSub {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.driverName {
+  font-size: 0.75rem;
+  color: var(--text-sec);
+  margin: 0;
+}
+
+.backBtn {
+  background: var(--surface-input);
+  border: 1.5px solid var(--border-input);
+  color: var(--text-sec);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}

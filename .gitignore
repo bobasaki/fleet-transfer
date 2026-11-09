@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+
+# Playwright artifacts (snapshots ARE committed; reports/results are not)
+frontend/test-results/
+frontend/playwright-report/
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
+# macOS
+.DS_Store
+frontend/tsconfig.tsbuildinfo

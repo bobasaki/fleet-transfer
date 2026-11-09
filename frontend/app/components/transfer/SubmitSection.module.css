@@ -1,0 +1,40 @@
+/* SubmitSection — warning/error lists and submit CTA. */
+
+.listHeader {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.list {
+  margin: 0;
+  padding-left: 1.2rem;
+  line-height: 1.65;
+}
+
+/* Submit button — active (canSave) */
+.submitBtn {
+  width: 100%;
+  padding: 1.1rem 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-lg);
+}
+
+.submitBtnActive {
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-mid) 100%);
+  cursor: pointer;
+}
+
+.submitBtnInactive {
+  background: var(--border);
+  cursor: not-allowed;
+}

@@ -1,0 +1,6 @@
+/* Applied only while taking toHaveScreenshot() captures. */
+
+/* Hide the Next.js dev-mode indicator so dev-server screenshots stay clean. */
+nextjs-portal {
+  display: none !important;
+}

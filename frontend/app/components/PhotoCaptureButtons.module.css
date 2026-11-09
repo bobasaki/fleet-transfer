@@ -1,0 +1,42 @@
+/* PhotoCaptureButtons — outer row and card-variant button face. */
+
+.buttonRow {
+  display: flex;
+  gap: var(--space-5);
+}
+
+.labelFlex {
+  flex: 1;
+  cursor: pointer;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+/* Card variant (ReceiptCard / TravelDocCard) button face — no file state */
+.photoBtnCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.7rem 0.75rem;
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-mid) 100%);
+  color: #ffffff;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px var(--red-glow);
+}
+
+/* Card variant — file already selected */
+.photoBtnCardHasFile {
+  background: var(--surface-input);
+  color: var(--text-sec);
+  border: 1.5px solid var(--border);
+  box-shadow: none;
+}

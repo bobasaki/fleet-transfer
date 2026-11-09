@@ -1,0 +1,66 @@
+/* layout.module.css — shared structural utilities.
+   Limit: ~8 layout utility classes. Do NOT grow into a utility framework.
+   Used by route pages and transfer section components. */
+
+/* ── Page shell ─────────────────────────────────────────────── */
+
+.pageShell {
+  max-width: var(--shell-max);
+  margin-inline: auto;
+}
+
+.pageShellWide {
+  max-width: var(--shell-max-wide);
+  margin-inline: auto;
+}
+
+/* ── Background decoration (aria-hidden) ─────────────────── */
+
+.bgGrid {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.bgGlow {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  box-shadow: 0 0 80px 28px var(--red-glow);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Flex row layouts ────────────────────────────────────────── */
+
+.rowBetween {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rowBaselineBetween {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+/* ── SVG icon helpers ─────────────────────────────────────────── */
+
+.iconShrink {
+  flex-shrink: 0;
+}
+
+.iconInline {
+  vertical-align: middle;
+  margin-right: 0.3rem;
+}

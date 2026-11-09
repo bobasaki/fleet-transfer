@@ -1,0 +1,44 @@
+/* transfer/page.tsx — route-level static styles. */
+
+.main {
+  background: var(--bg);
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+.contentShell {
+  position: relative;
+  z-index: 2;
+  padding: 1rem 1rem 0;
+}
+
+.photoDateNote {
+  font-size: 0.72rem;
+  color: var(--amber);
+  margin: 0.35rem 0 0;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+}
+
+/* Semi-transparent section divider (dark-mode oriented; preserved as-is). */
+.hrDivider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 1rem 0;
+}
+
+.rotationHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.receiptsHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+}
+
+.saveErrorNote {
+  margin-top: 0.75rem;
+}

@@ -1,0 +1,253 @@
+/* admin/page.tsx — admin panel styles. Uses hardcoded palette (no CSS-var
+   theme support needed for the admin surface). */
+
+/* ── Login view ──────────────────────────────────────────────── */
+
+.loginMain {
+  background: #F4F4F4;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 360px;
+  padding: 2rem 1.5rem;
+}
+
+.loginTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  color: #1A1A1A;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.loginLabel {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #767676;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 0.4rem;
+}
+
+.loginInput {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: 1rem;
+  border: 1.5px solid #D8D8D8;
+  border-radius: 4px;
+  font-family: inherit;
+  box-sizing: border-box;
+  margin-bottom: 0.75rem;
+}
+
+.loginError {
+  color: #CC0000;
+  font-size: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.loginBtn {
+  width: 100%;
+  padding: 0.75rem;
+  background: #CC0000;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+/* ── Authenticated view ─────────────────────────────────────── */
+
+.main {
+  background: #F4F4F4;
+  min-height: 100vh;
+  padding: 1.5rem 1rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  color: #1A1A1A;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.refreshBtn {
+  font-size: 0.78rem;
+  background: transparent;
+  border: 1px solid #D8D8D8;
+  border-radius: 4px;
+  padding: 0.3rem 0.625rem;
+  cursor: pointer;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+}
+
+.actionSuccess {
+  background: #F0FDF4;
+  border: 1px solid #86EFAC;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+  color: #14532D;
+}
+
+.listError {
+  color: #CC0000;
+  font-size: 0.82rem;
+  margin-bottom: 1rem;
+}
+
+.loadingText {
+  color: #767676;
+  font-size: 0.82rem;
+}
+
+.transferList {
+  border: 1px solid #D8D8D8;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.emptyMsg {
+  padding: 1rem;
+  color: #767676;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.transferRow {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.625rem 0.875rem;
+  /* background, borderBottom, opacity are dynamic */
+}
+
+.transferInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.transferPlate {
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.transferDate {
+  font-size: 0.75rem;
+  color: #767676;
+  margin-left: 0.5rem;
+}
+
+.transferId {
+  font-size: 0.65rem;
+  color: #767676;
+  margin-left: 0.5rem;
+}
+
+.transferStatus {
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  /* color is dynamic: #059669 if submitted else #767676 */
+}
+
+.transferPhotoCount {
+  font-size: 0.7rem;
+  color: #767676;
+}
+
+.deleteBtn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.72rem;
+  background: transparent;
+  border: 1px solid #FECACA;
+  border-radius: 3px;
+  color: #CC0000;
+  cursor: pointer;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  white-space: nowrap;
+}
+
+/* ── Orphan section ─────────────────────────────────────────── */
+
+.orphanHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.orphanTitle {
+  font-size: 0.87rem;
+  font-weight: 700;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  color: #1A1A1A;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.orphanError {
+  color: #CC0000;
+  font-size: 0.82rem;
+}
+
+.orphanRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #FFFBEB;
+  border: 1px solid #FCD34D;
+  border-radius: 4px;
+  margin-bottom: 0.4rem;
+}
+
+.orphanFolder {
+  flex: 1;
+  font-size: 0.8rem;
+  color: #1A1A1A;
+  font-family: monospace;
+}
+
+.orphanDeleteBtn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.72rem;
+  background: transparent;
+  border: 1px solid #FECACA;
+  border-radius: 3px;
+  color: #CC0000;
+  cursor: pointer;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+}

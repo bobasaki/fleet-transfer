@@ -1,0 +1,113 @@
+/* TravelDocCard — per-card layout for travel document slots. */
+
+.fromToRow {
+  display: flex;
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.fromToCol {
+  flex: 1;
+}
+
+.fromToInput {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+/* Upload button face — no file state */
+.uploadBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  padding: 0.75rem;
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-mid) 100%);
+  color: #ffffff;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px var(--red-glow);
+}
+
+/* Upload button — file already selected */
+.uploadBtnHasFile {
+  background: var(--surface-input);
+  color: var(--text-sec);
+  border: 1.5px solid var(--border);
+  box-shadow: none;
+}
+
+/* Route/stay summary */
+.routeSummary {
+  font-size: 0.85rem;
+  color: var(--text);
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.routeSummaryNote {
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.extractedWrapper {
+  margin-top: 0.625rem;
+}
+
+.amountRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.625rem;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+  align-items: center;
+}
+
+.nativeSpan {
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.nativeLabel {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  margin-right: 0.25rem;
+}
+
+.eurSpan {
+  font-size: 0.875rem;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.eurLabel {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+.eurInput {
+  flex: 0 0 auto;
+  width: 90px;
+  font-weight: 700;
+}
+
+.uploadLabelWrap {
+  display: block;
+  cursor: pointer;
+}
+
+.hiddenInput {
+  display: none;
+}

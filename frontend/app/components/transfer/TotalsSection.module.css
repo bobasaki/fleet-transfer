@@ -1,0 +1,67 @@
+/* TotalsSection — EUR totals summary card. */
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-input);
+  border-top: 2px solid var(--red);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.125rem;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--red);
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  margin-bottom: 0.875rem;
+}
+
+.grid {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.rowLabel {
+  color: var(--text-muted);
+}
+
+.rowValue {
+  color: var(--text-sec);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-weight: 600;
+}
+
+.totalRow {
+  border-top: 1px solid var(--border);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.totalLabel {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.totalValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  letter-spacing: -0.02em;
+}

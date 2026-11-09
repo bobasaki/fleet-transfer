@@ -1,0 +1,421 @@
+/* formStyles.module.css — CSS classes replacing the formStyles.ts CSSProperties objects.
+   All declarations are 1:1 ports of the originals; no visual change intended. */
+
+/* ── Layout cards ──────────────────────────────────────────── */
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-10);
+}
+
+.redBar {
+  height: 2px;
+  background: linear-gradient(90deg, var(--red) 0%, transparent 100%);
+}
+
+.cardBody {
+  padding: var(--space-10) var(--space-11);
+}
+
+/* ── Typography / labels ───────────────────────────────────── */
+
+.sectionLabel {
+  display: block;
+  font-size: var(--text-3);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-5);
+  text-transform: uppercase;
+  color: var(--red);
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  margin-bottom: var(--space-5);
+}
+
+.fieldLabel {
+  display: block;
+  font-size: var(--text-3);
+  font-weight: var(--weight-bold);
+  color: var(--text-muted);
+  letter-spacing: var(--tracking-4);
+  text-transform: uppercase;
+  margin-top: var(--space-10);
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+}
+
+.warnTag {
+  color: var(--amber);
+  font-size: var(--text-5);
+  margin-left: var(--space-4);
+}
+
+.loadingText {
+  color: var(--text-muted);
+  font-size: var(--text-8);
+  margin: var(--space-5) 0 0;
+}
+
+/* ── Form inputs ───────────────────────────────────────────── */
+
+.txtInput {
+  display: block;
+  width: 100%;
+  padding: var(--space-8) var(--space-10);
+  font-size: var(--text-12);
+  box-sizing: border-box;
+  margin-top: var(--space-3);
+  border: 1.5px solid var(--border-input);
+  border-radius: var(--radius-sm);
+  background: var(--surface-input);
+  color: var(--text);
+  font-family: inherit;
+  -webkit-appearance: none;
+  outline: none;
+}
+
+/* selectStyle = txtInput + right-padding for arrow area, no top margin */
+.selectStyle {
+  composes: txtInput;
+  margin-top: 0;
+  padding-right: var(--space-14);
+}
+
+/* fieldRow / fieldKey / fieldInput — shared by ReceiptCard & TravelDocCard */
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  margin-top: var(--space-5);
+}
+
+.fieldKey {
+  min-width: 86px;
+  font-size: var(--text-4);
+  font-weight: var(--weight-bold);
+  color: var(--text-muted);
+  letter-spacing: var(--tracking-4);
+  text-transform: uppercase;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+}
+
+.fieldInput {
+  flex: 1;
+  padding: var(--space-4) var(--space-7);
+  font-size: var(--text-12);
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-input);
+  color: var(--text);
+  background: var(--surface-input);
+  font-family: inherit;
+  -webkit-appearance: none;
+  outline: none;
+  min-width: 0;
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+
+.ghostBtn {
+  padding: var(--space-2) var(--space-9);
+  font-size: var(--text-7);
+  font-weight: var(--weight-semibold);
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: var(--tracking-1);
+  border: 1.5px solid var(--border-input);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: var(--surface-input);
+  color: var(--text-sec);
+}
+
+.reviewBtn {
+  margin-top: var(--space-9);
+  width: 100%;
+  padding: var(--space-6) var(--space-10);
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--amber);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-7);
+  cursor: pointer;
+  font-weight: var(--weight-bold);
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: var(--tracking-2);
+  text-transform: uppercase;
+}
+
+/* ── Direction button — base + .isActive modifier ──────────── */
+
+.directionBtn {
+  flex: 1;
+  padding: var(--space-8) var(--space-5);
+  font-size: var(--text-7);
+  font-weight: var(--weight-bold);
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: var(--tracking-1);
+  text-transform: uppercase;
+  border: 1.5px solid var(--border-input);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: var(--surface-input);
+  color: var(--text-sec);
+  box-sizing: border-box;
+  box-shadow: none;
+}
+
+.isActive {
+  border-color: var(--red);
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-mid) 100%);
+  color: #ffffff;
+  box-shadow: 0 0 14px var(--red-glow);
+}
+
+/* ── Route readout ─────────────────────────────────────────── */
+
+.routeReadout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-6) var(--space-10);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+}
+
+.routeReadoutLabel {
+  font-size: var(--text-2);
+  font-weight: var(--weight-bold);
+  color: var(--text-muted);
+  letter-spacing: var(--tracking-4);
+  text-transform: uppercase;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+}
+
+.routeReadoutValue {
+  font-size: var(--text-11);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+/* ── Alert boxes ───────────────────────────────────────────── */
+
+.errorBox {
+  background: var(--red-dim);
+  border: 1px solid var(--red-glow);
+  border-left: 3px solid var(--red);
+  border-radius: var(--radius-md);
+  padding: var(--space-10) var(--space-11);
+  font-size: var(--text-9);
+  color: var(--red);
+  margin-bottom: var(--space-10);
+}
+
+.warnBox {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-left: 3px solid var(--amber);
+  border-radius: var(--radius-md);
+  padding: var(--space-10) var(--space-11);
+  font-size: var(--text-9);
+  color: var(--amber);
+  margin-bottom: var(--space-10);
+}
+
+/* ── Photo capture button — base + .hasFile modifier ────────── */
+
+.photoCapture {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  width: 100%;
+  padding: var(--space-10) var(--space-11);
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-mid) 100%);
+  color: #ffffff;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-7);
+  font-weight: var(--weight-bold);
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: var(--tracking-3);
+  cursor: pointer;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  margin-top: var(--space-3);
+  border: none;
+  box-shadow: 0 0 12px var(--red-glow);
+}
+
+.hasFile {
+  background: var(--surface-input);
+  color: var(--text-sec);
+  border: 1.5px solid var(--border);
+  box-shadow: none;
+}
+
+/* ── Item card (ReceiptCard / TravelDocCard outer wrapper) ───────
+   borderLeft stays inline: accent color is computed per render.   */
+
+.itemCard {
+  margin-bottom: 0.75rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-10);
+}
+
+.itemCardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-bottom: var(--space-7);
+}
+
+/* ── Status badges ───────────────────────────────────────────── */
+
+.badge {
+  font-size: 0.62rem;
+  font-weight: var(--weight-bold);
+  border-radius: 4px;
+  padding: 0.05rem 0.4rem;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: 0.05em;
+}
+
+.badgeConfirmed {
+  color: #4ADE80;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badgePending {
+  color: #FCD34D;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+}
+
+.badgeMulti {
+  color: #C084FC;
+  background: rgba(107, 33, 168, 0.15);
+  border: 1px solid rgba(192, 132, 252, 0.3);
+}
+
+/* ── Confidence badge ────────────────────────────────────────── */
+
+.confBadge {
+  font-size: 0.62rem;
+  color: #FCD34D;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 4px;
+  padding: 0.05rem 0.35rem;
+  margin-left: 0.3rem;
+}
+
+/* ── Ukloni (remove) button ─────────────────────────────────── */
+
+.ukloniBtn {
+  margin-left: auto;
+  font-size: var(--text-5);
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Error section ───────────────────────────────────────────── */
+
+.errorSection {
+  margin-top: var(--space-5);
+}
+
+.errorTitle {
+  color: #B91C1C;
+  font-size: var(--text-9);
+  font-weight: var(--weight-bold);
+  margin: 0;
+}
+
+.errorDetail {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  margin: 0.25rem 0 0;
+  word-break: break-word;
+}
+
+.errorActions {
+  display: flex;
+  gap: var(--space-5);
+  margin-top: var(--space-7);
+}
+
+.errorActionBtn {
+  flex: 1;
+  padding: var(--space-6) 0.75rem;
+  background: var(--surface-input);
+  color: var(--text-sec);
+  border: 1.5px solid var(--border-input);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-5);
+  cursor: pointer;
+  font-weight: var(--weight-bold);
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Confirm button ──────────────────────────────────────────── */
+
+.confirmBtn {
+  margin-top: var(--space-9);
+  width: 100%;
+  padding: var(--space-6) var(--space-10);
+  background: rgba(245, 158, 11, 0.1);
+  color: #FCD34D;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-7);
+  cursor: pointer;
+  font-weight: var(--weight-bold);
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* ── FX rate missing warning ─────────────────────────────────── */
+
+.fxWarn {
+  color: #FCD34D;
+  font-size: var(--text-5);
+  font-weight: var(--weight-bold);
+  margin: 0.375rem 0 0;
+  font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
+}
+
+/* ── Amount section wrapper ──────────────────────────────────── */
+
+.amountSection {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: var(--space-7);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+/* ── Cascade guard ─────────────────────────────────────────────
+   The globals.css [data-theme] select rules (specificity 0,1,1) would
+   otherwise beat these class rules (0,1,0) and reveal the SVG arrow.
+   The combined [data-theme]+class selector (0,2,0) wins. */
+
+:global([data-theme]) .txtInput,
+:global([data-theme]) .selectStyle,
+:global([data-theme]) .fieldInput {
+  background-image: none;
+}

@@ -1,0 +1,30 @@
+/* DestinationPayoutSection — dnevnica info and direction buttons. */
+
+.dnevnicaInfo {
+  font-size: 0.875rem;
+  color: var(--text-sec);
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.dnevnicaAmount {
+  color: var(--text);
+}
+
+.directionRow {
+  display: flex;
+  gap: var(--space-5);
+  margin-top: 0.375rem;
+}
+
+.routeRow {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.routeSeparator {
+  align-self: center;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
