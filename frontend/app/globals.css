@@ -193,6 +193,16 @@ input, select, textarea {
   color-scheme: light;
 }
 
+/* Open dropdown list. Options inherit the select's text colour (white in dark
+   mode), but Chromium on Linux/Windows can draw the popup with a light
+   background regardless of color-scheme, which leaves the options white on
+   white. Give them the theme's own surface and text colours. */
+select option,
+select optgroup {
+  background-color: var(--surface);
+  color: var(--text);
+}
+
 /* Calendar picker icon */
 input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
