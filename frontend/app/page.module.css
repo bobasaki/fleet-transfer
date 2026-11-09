@@ -20,6 +20,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .brandRow {
@@ -29,9 +30,12 @@
   margin-bottom: 0.625rem;
 }
 
+/* Wordmark and subtitle scale with viewport width so the brand row plus the
+   theme toggle fit on a 320px phone; they reach full size around 610px. */
 .brandText {
-  font-size: 2.75rem;
-  letter-spacing: 0.22em;
+  font-size: clamp(1.4rem, 7.2vw, 2.75rem);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
   color: var(--red);
   text-transform: uppercase;
   font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
@@ -47,8 +51,9 @@
 }
 
 .transferLogText {
-  font-size: 1.265rem;
-  letter-spacing: 0.18em;
+  font-size: clamp(0.7rem, 3.3vw, 1.265rem);
+  white-space: nowrap;
+  letter-spacing: 0.12em;
   color: var(--text-muted);
   text-transform: uppercase;
   font-family: var(--font-sans, 'Instrument Sans', system-ui, sans-serif);
