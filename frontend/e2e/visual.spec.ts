@@ -12,7 +12,7 @@ import {
 // WebKit (WebKit = iPhone Safari, the primary target). These baselines are the
 // "before" that R1–R3 must keep byte-stable and R4 re-baselines on purpose.
 //
-// Naming: `<slug>-w<width>-<theme>.png` (+ Playwright's `-<project>-darwin`).
+// Naming: `<slug>-w<width>-<theme>.png` (+ Playwright's `-<project>-linux`).
 // The one exception is transfer @ 390 dark, which keeps the original plan11
 // names (`empty-form.png`, …) so historical comparisons survive — see
 // snapName(). Width AND theme are otherwise always in the filename.

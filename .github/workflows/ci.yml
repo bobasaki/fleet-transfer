@@ -2,9 +2,9 @@ name: CI
 
 # Runs the OS-portable gates on every PR and on pushes to main: type-check,
 # unit tests, production build, and the behavioral e2e specs (a–g). The visual
-# snapshot suite (visual.spec.ts) is intentionally skipped here — its baselines
-# are macOS-specific (*-darwin.png) and would all miss on a Linux runner; it
-# stays a local + real-device gate (see testIgnore in frontend/playwright.config.ts).
+# snapshot suite (visual.spec.ts) is intentionally skipped here — its Linux
+# baselines (*-linux.png) haven't been generated yet, so it stays a local gate
+# until they are (see testIgnore in frontend/playwright.config.ts).
 on:
   pull_request:
   push:

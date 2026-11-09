@@ -52,26 +52,11 @@ export default function SplashScreen({
             <path d="M150,250 L150,205 L195,205" />
             <path d="M850,750 L850,795 L805,795" />
           </g>
-          <g transform="translate(170 170) scale(0.66)">
-            <path
-              className="ftDim"
-              d="M530,250 L780,500 L530,750"
-              fill="none"
-              strokeWidth="114"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              className="ftBright"
-              d="M530,250 L780,500 L530,750"
-              fill="none"
-              strokeWidth="114"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <rect className="ftBar" x="190" y="471" width="530" height="58" rx="12" />
-          </g>
         </svg>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="ftCar ftDim" src="/car-white.png" alt="" aria-hidden="true" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="ftCar ftBright" src="/car-white.png" alt="" aria-hidden="true" />
       </div>
 
       <div className="ftWord">
@@ -104,16 +89,15 @@ const CSS = `
 }
 .ftLogo{ position:relative; width:min(40vw,190px); aspect-ratio:1; }
 .ftLogo svg{ display:block; width:100%; height:100%; overflow:visible; }
-.ftDim{ stroke:rgba(255,255,255,.16); }
-.ftBright{ stroke:#fff; clip-path:inset(0 0 100% 0); }
+.ftLogo svg{ position:absolute; inset:0; }
+.ftCar{ position:absolute; inset:14%; width:72%; height:72%; object-fit:contain; pointer-events:none; user-select:none; }
+.ftDim{ opacity:.16; }
+.ftBright{ clip-path:inset(0 0 100% 0); }
 .play .ftBright{ animation:ftReveal var(--sweep) cubic-bezier(.55,0,.35,1) var(--sweep-delay) forwards; }
-@keyframes ftReveal{ to{ clip-path:inset(0 0 0% 0); } }
-.ftBar{ fill:#fff; opacity:0; }
-.play .ftBar{ animation:ftBar .5s ease-out calc(var(--sweep-delay) + var(--sweep)*.62) forwards; }
-@keyframes ftBar{
-  0%{ opacity:0; filter:drop-shadow(0 0 0 rgba(255,255,255,0)); }
-  40%{ opacity:1; filter:drop-shadow(0 0 14px rgba(230,240,255,.95)); }
-  100%{ opacity:1; filter:drop-shadow(0 0 6px rgba(230,240,255,.45)); }
+@keyframes ftReveal{
+  0%{ clip-path:inset(0 0 100% 0); filter:drop-shadow(0 0 0 rgba(255,255,255,0)); }
+  70%{ filter:drop-shadow(0 0 14px rgba(230,240,255,.75)); }
+  100%{ clip-path:inset(0 0 0% 0); filter:drop-shadow(0 0 6px rgba(230,240,255,.4)); }
 }
 .ftScan{
   position:absolute; left:-12%; width:124%; height:5px; top:0; border-radius:3px; opacity:0;
@@ -145,6 +129,6 @@ const CSS = `
 @keyframes ftRise{ to{ opacity:1; transform:translateY(0); } }
 @media (prefers-reduced-motion:reduce){
   .ftBright{ clip-path:none; animation:none; } .ftScan,.ftLoader{ display:none; }
-  .ftBar,.ftWord,.ftTicks{ opacity:1; transform:none; animation:none; }
+  .ftWord,.ftTicks{ opacity:1; transform:none; animation:none; }
 }
 `;

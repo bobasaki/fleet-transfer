@@ -21,7 +21,7 @@ v1 = one driver (`Demo Vozač`), validate it works. **iPhone Safari is the prima
 - `frontend/app/components/` — `ReceiptCard`, `TravelDocCard`, `PhotoCaptureButtons` (renders the two Kamera/Galerija inputs), `formStyles.ts` (single source for shared style tokens — never redefine them locally).
 - `frontend/hooks/` — `useExtraction`, `useDraftPersistence` (localStorage key names and draft JSON shape are frozen), `useOnlineStatus`.
 - `frontend/lib/` — pure, unit-tested utilities (`format`, `api`, `buildSubmitPayload` pins the wire format, `submitValidation`, …).
-- `frontend/e2e/` — Playwright characterization suite (Chromium + WebKit, visual snapshots). Full check: `cd frontend && npx tsc --noEmit && npx vitest run && npx playwright test && npm run build`.
+- `frontend/e2e/` — Playwright characterization suite (Chromium + WebKit, visual snapshots as Linux `*-linux.png` baselines, not generated yet). Full check: `cd frontend && npx tsc --noEmit && npx vitest run && npx playwright test && npm run build`.
 
 ## Hard constraints (non-negotiable)
 

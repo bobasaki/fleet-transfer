@@ -2,16 +2,18 @@ import { defineConfig } from "@playwright/test";
 
 // Phase 1 characterization suite for the transfer page (docs/plans/plan11.md).
 // Pins today's behavior with mocked Edge Function responses BEFORE any
-// extraction refactor. Local runs only — no CI pipeline (out of v1 scope).
+// extraction refactor. Behavioral specs (a–g) also run in CI (.github/workflows/ci.yml).
 //
 // Run: npx playwright test            (starts its own dev server on :3100)
 //      npx playwright test --ui       (interactive)
 export default defineConfig({
   testDir: "./e2e",
-  // Visual snapshots are macOS-specific (*-darwin.png) and would all "miss" on a
-  // Linux CI runner. Skip visual.spec.ts when CI is set, so the OS-portable
-  // behavioral specs (a–g) can gate every PR. The visual oracle stays a local +
-  // real-device gate until containerized/Linux baselines exist (revisit post-R4).
+  // Visual snapshots are Linux baselines (*-linux.png), and none are committed
+  // yet. Generate them with `npx playwright test e2e/visual.spec.ts
+  // --update-snapshots` on a Playwright-supported Linux (Ubuntu 24.04 or the
+  // official Playwright Docker image; Ubuntu 26.04 isn't supported yet). Until
+  // then visual.spec.ts is skipped when CI is set, so the behavioral specs
+  // (a–g) can gate every PR on their own.
   testIgnore: process.env.CI ? ["**/visual.spec.ts"] : [],
   fullyParallel: true,
   retries: 0,
