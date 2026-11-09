@@ -12,7 +12,7 @@ v1 = one driver (`Demo Vozač`), validate it works. **iPhone Safari is the prima
 
 - **Frontend**: PWA, deploys to Vercel, runs locally first
 - **Backend**: Supabase — Postgres (source of truth), Storage (`transfer-photos` bucket), Edge Functions (AI proxy)
-- **AI**: OpenAI GPT-5.4 mini, pinned to `gpt-5.4-mini-2026-03-17`, called only from Edge Functions behind the `callVision()` / `callText()` wrapper in `supabase/functions/_shared/vision.ts`
+- **AI**: Claude via the Anthropic SDK (`npm:@anthropic-ai/sdk@1.6.0`): Sonnet 5.5 (`claude-sonnet-5-5`, `MODEL_CAPABLE`) for receipts and travel documents, Haiku 5.5 (`claude-haiku-5-5`, `MODEL_FAST`) for plates and odometers. Called only from Edge Functions behind the `callVision()` / `callText()` wrapper in `supabase/functions/_shared/vision.ts`
 
 ## Frontend layout (after the plan11 decomposition)
 
@@ -25,7 +25,7 @@ v1 = one driver (`Demo Vozač`), validate it works. **iPhone Safari is the prima
 
 ## Hard constraints (non-negotiable)
 
-- AI/OpenAI key + Supabase `service_role` key: **server-side only, never in the browser bundle**
+- Anthropic API key (`ANTHROPIC_API_KEY`) + Supabase `service_role` key: **server-side only, never in the browser bundle**
 - Photo capture: two explicit buttons per slot — **Kamera** (`capture="environment"`, uses `new Date()` as timestamp) and **Galerija** (no `capture`, reads EXIF timestamp from metadata). Do NOT collapse them into a single input. Do NOT use `getUserMedia`.
 - One receipt per photo — do NOT segment multiple receipts from one image
 - Plates: store as-read, no country/format validation, `country_guess` must never alter `plate_raw`
@@ -49,7 +49,7 @@ DB tables: `transfers`, `receipts`, `transfer_photos`. Storage: `transfer-photos
 
 ## Build order (one slice per turn, stop after each)
 
-1. **Spike**: odometer photo → Edge Function → GPT-5.4 mini → editable km field → one DB row
+1. **Spike**: odometer photo → Edge Function → Claude Haiku 5.5 → editable km field → one DB row
 2. All 4 photo types extracting (plates + receipts + EUR conversion + per-category totals)
 3. Review screen: all fields, low-confidence flagged, manual dropdowns, submit-blocked until confirmed
 4. Submit → DB + photos to Storage + local draft safety net

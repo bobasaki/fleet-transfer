@@ -16,7 +16,7 @@ Conventions: DB columns `snake_case`. JSON keys `snake_case` (match DB to avoid 
   "receipt_date": "2026-06-05",
   "vendor": "INA",
   "raw_text": "<full OCR dump for debugging>",
-  "model": "gpt-5.4-mini-2026-03-17",
+  "model": "claude-sonnet-5-5",
   "confidence": {
     "native_currency": 0.99,
     "receipt_date": 0.91
@@ -55,7 +55,7 @@ Rules:
   "plate_raw": "S B 1 2 3 K M",
   "country_guess": "SI",
   "vehicle_model": "Opel Crossland",
-  "model": "gpt-5.4-mini-2026-03-17",
+  "model": "claude-haiku-5-5",
   "confidence": 0.88
 }
 ```
@@ -70,7 +70,7 @@ Rules:
 ```json
 {
   "odometer_km": 128450,
-  "model": "gpt-5.4-mini-2026-03-17",
+  "model": "claude-haiku-5-5",
   "confidence": 0.74
 }
 ```
@@ -78,12 +78,12 @@ Rules:
 ### Error shape (all functions)
 
 ```json
-{ "error": "extraction_failed", "detail": "<human-readable>", "model": "<the model id actually used, e.g. gpt-5.4-mini-2026-03-17>" }
+{ "error": "extraction_failed", "detail": "<human-readable>", "model": "<the model id actually used, e.g. claude-haiku-5-5>" }
 ```
 
 On error the frontend leaves the field blank + flagged, never blocks the whole form.
 
-`model` is always the exact model id the Edge Function called. All extraction types currently use the pinned `gpt-5.4-mini-2026-03-17` snapshot through `OPENAI_MODEL` in `_shared/vision.ts`; `MODEL_FAST` and `MODEL_CAPABLE` both resolve to it. Special values: `"manual"` when extraction failed and the driver entered the values by hand (frontend builds a synthetic zero-confidence result; the row still requires human confirmation before submit); `"client_error"` for frontend-fabricated error results (never submitted); `"unknown"` as the payload-builder fallback when a stored result somehow lacks a model.
+`model` is always the exact model id the Edge Function called. Models are set in `_shared/vision.ts`: `MODEL_CAPABLE` = `claude-sonnet-5-5` (receipts, travel documents) and `MODEL_FAST` = `claude-haiku-5-5` (plates, odometers). Special values: `"manual"` when extraction failed and the driver entered the values by hand (frontend builds a synthetic zero-confidence result; the row still requires human confirmation before submit); `"client_error"` for frontend-fabricated error results (never submitted); `"unknown"` as the payload-builder fallback when a stored result somehow lacks a model.
 
 ---
 

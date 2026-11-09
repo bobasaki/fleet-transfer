@@ -1,25 +1,34 @@
 // Provider seam — swap the implementation here to change AI backend.
 // All extraction functions import callVision / callText from this module only.
 
-import { type AiUsageContext, type OpenAiUsage, recordAiUsage } from "./aiUsage.ts";
+import Anthropic from "npm:@anthropic-ai/sdk@1.6.0";
+import { type AiTokenUsage, type AiUsageContext, recordAiUsage } from "./aiUsage.ts";
 
-export const OPENAI_MODEL = "gpt-5.4-mini-2026-03-17";
-export const MODEL_CAPABLE = OPENAI_MODEL;
-export const MODEL_FAST = OPENAI_MODEL;
+// Receipts and travel documents: fine print, several items per document.
+export const MODEL_CAPABLE = "claude-sonnet-5-5";
+// Plates and odometers: short, single-value reads.
+export const MODEL_FAST = "claude-haiku-5-5";
 
-// Pin the snapshot so extraction behavior cannot drift behind the model alias.
-// GPT-5.4 mini rejects custom temperature values and uses
-// `max_completion_tokens`. Low reasoning preserves latency and output budget.
-export const REASONING_EFFORT = "low";
+// Extraction is short structured output, so keep thinking shallow for latency.
+export const EFFORT = "low";
 
-// Transient OpenAI failures worth retrying. Anything else (400 bad image,
-// 401 authentication failure, etc.) fails immediately.
-const RETRYABLE_STATUSES = new Set([429, 500, 502, 503, 504]);
-export const RETRY_DELAYS_MS = [1000, 2500];
+// Thinking shares the max_tokens budget with the JSON answer. Callers still pass
+// the small output budgets from the OpenAI era; raise them to this floor so a
+// long think never truncates the JSON. Billing is per token used, not this cap.
+export const MIN_MAX_TOKENS = 16000;
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+// Server-side refusal fallback: if the model declines (safety classifier), the
+// API re-runs the request on a fallback model inside the same call. Claude
+// Haiku 5.5 has no server-side fallback, so only Sonnet requests opt in.
+export const FALLBACK_BETA = "server-side-fallback-2026-07-01";
+const FALLBACK_MODELS = new Set<string>([MODEL_CAPABLE]);
+
+// The SDK retries 408/409/429/5xx and connection errors with backoff.
+const MAX_RETRIES = 2;
+const REQUEST_TIMEOUT_MS = 60_000;
+
+const IMAGE_MEDIA_TYPES = new Set(["image/jpeg", "image/png", "image/gif", "image/webp"]);
+type ImageMediaType = Anthropic.Beta.BetaBase64ImageSource["media_type"];
 
 // Chunk-based encoding avoids call-stack overflow on large phone images.
 function toBase64(bytes: Uint8Array): string {
@@ -31,64 +40,89 @@ function toBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-/**
- * POST a Chat Completions request body, retrying transient failures (retryable
- * HTTP statuses and network errors) with backoff before rethrowing the last
- * error. `delays` is injectable so tests don't sit through real backoff.
- *
- * `onUsage` (optional) receives the response's `usage` object on success — the
- * seam through which callVision/callText feed token telemetry without changing
- * this function's string return contract.
- */
-export async function postChatCompletionsWithRetry(
-  body: string,
-  apiKey: string,
-  delays: number[] = RETRY_DELAYS_MS,
-  onUsage?: (usage: OpenAiUsage | undefined) => void,
-): Promise<string> {
-  let lastError = new Error("OpenAI request failed");
-
-  for (let attempt = 0; attempt <= delays.length; attempt++) {
-    if (attempt > 0) await sleep(delays[attempt - 1]);
-
-    let response: Response;
-    try {
-      response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body,
-      });
-    } catch (err) {
-      lastError = new Error(`OpenAI fetch failed: ${err}`);
-      continue;
-    }
-
-    if (!response.ok) {
-      const text = await response.text();
-      lastError = new Error(`OpenAI ${response.status}: ${text}`);
-      if (!RETRYABLE_STATUSES.has(response.status)) throw lastError;
-      continue;
-    }
-
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
-    if (typeof content !== "string") {
-      throw new Error("OpenAI response did not contain message content");
-    }
-    onUsage?.(data.usage as OpenAiUsage | undefined);
-    return content;
+/** Build the Messages API request. Pure, so tests can check its shape. */
+export function buildRequest(
+  model: string,
+  content: Anthropic.Beta.BetaContentBlockParam[] | string,
+  maxTokens: number,
+): Anthropic.Beta.MessageCreateParamsNonStreaming {
+  const params: Anthropic.Beta.MessageCreateParamsNonStreaming = {
+    model,
+    max_tokens: Math.max(maxTokens, MIN_MAX_TOKENS),
+    output_config: { effort: EFFORT },
+    messages: [{ role: "user", content }],
+  };
+  if (FALLBACK_MODELS.has(model)) {
+    params.betas = [FALLBACK_BETA];
+    params.fallbacks = "default";
   }
-
-  throw lastError;
+  return params;
 }
 
-function requireApiKey(): string {
-  const apiKey = Deno.env.get("OPENAI_API_KEY");
-  if (!apiKey) throw new Error("OPENAI_API_KEY secret not set");
-  return apiKey;
+/**
+ * Return the response's text. Thinking blocks are skipped. Throws when the model
+ * refused, ran out of tokens, or produced no text, so callers never parse a
+ * partial answer.
+ */
+export function responseText(message: Anthropic.Beta.BetaMessage): string {
+  if (message.stop_reason === "refusal") {
+    const category = message.stop_details?.category ?? "unspecified";
+    throw new Error(`Model declined the request (refusal: ${category})`);
+  }
+  if (message.stop_reason === "max_tokens") {
+    throw new Error("Model response hit max_tokens before finishing");
+  }
+  const text = message.content
+    .filter((block): block is Anthropic.Beta.BetaTextBlock => block.type === "text")
+    .map((block) => block.text)
+    .join("")
+    .trim();
+  if (!text) throw new Error("Model response did not contain text");
+  return text;
+}
+
+/**
+ * Map Claude usage onto the ai_usage columns. input_tokens excludes cached
+ * tokens, so add cache reads and writes back in: prompt_tokens keeps meaning
+ * "all input tokens", with cached_tokens as the cheaper subset.
+ */
+export function toTokenUsage(usage: Anthropic.Beta.BetaUsage): AiTokenUsage {
+  const cacheRead = usage.cache_read_input_tokens ?? 0;
+  const cacheWrite = usage.cache_creation_input_tokens ?? 0;
+  return {
+    inputTokens: usage.input_tokens + cacheRead + cacheWrite,
+    outputTokens: usage.output_tokens,
+    cachedTokens: cacheRead,
+  };
+}
+
+let client: Anthropic | null = null;
+
+function getClient(): Anthropic {
+  if (client) return client;
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY secret not set");
+  client = new Anthropic({ apiKey, maxRetries: MAX_RETRIES, timeout: REQUEST_TIMEOUT_MS });
+  return client;
+}
+
+async function run(
+  params: Anthropic.Beta.MessageCreateParamsNonStreaming,
+  ctx?: AiUsageContext,
+): Promise<string> {
+  const startedAt = Date.now();
+  const message = await getClient().beta.messages.create(params);
+  if (ctx) {
+    recordAiUsage({
+      ...ctx,
+      // The served model: differs from params.model when a fallback answered.
+      model: message.model,
+      usage: toTokenUsage(message.usage),
+      durationMs: Date.now() - startedAt,
+      ok: true,
+    });
+  }
+  return responseText(message);
 }
 
 /**
@@ -104,39 +138,20 @@ export async function callVision(
   model = MODEL_FAST,
   ctx?: AiUsageContext,
 ): Promise<string> {
-  const body = JSON.stringify({
-    model,
-    response_format: { type: "json_object" },
-    max_completion_tokens: maxTokens,
-    reasoning_effort: REASONING_EFFORT,
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:${mimeType};base64,${toBase64(imageBytes)}`,
-            },
-          },
-          { type: "text", text: prompt },
-        ],
-      },
-    ],
-  });
-
-  let usage: OpenAiUsage | undefined;
-  const startedAt = Date.now();
-  const content = await postChatCompletionsWithRetry(
-    body,
-    requireApiKey(),
-    RETRY_DELAYS_MS,
-    (u) => (usage = u),
-  );
-  if (ctx) {
-    recordAiUsage({ ...ctx, model, usage, durationMs: Date.now() - startedAt, ok: true });
+  const mediaType = mimeType.toLowerCase();
+  if (!IMAGE_MEDIA_TYPES.has(mediaType)) {
+    throw new Error(
+      `Unsupported image type '${mimeType}'. Claude accepts JPEG, PNG, GIF and WebP.`,
+    );
   }
-  return content;
+  const params = buildRequest(model, [
+    {
+      type: "image",
+      source: { type: "base64", media_type: mediaType as ImageMediaType, data: toBase64(imageBytes) },
+    },
+    { type: "text", text: prompt },
+  ], maxTokens);
+  return await run(params, ctx);
 }
 
 /**
@@ -152,29 +167,6 @@ export async function callText(
   model = MODEL_FAST,
   ctx?: AiUsageContext,
 ): Promise<string> {
-  const body = JSON.stringify({
-    model,
-    response_format: { type: "json_object" },
-    max_completion_tokens: maxTokens,
-    reasoning_effort: REASONING_EFFORT,
-    messages: [
-      {
-        role: "user",
-        content: prompt + "\n\nDOCUMENT TEXT:\n" + textContent,
-      },
-    ],
-  });
-
-  let usage: OpenAiUsage | undefined;
-  const startedAt = Date.now();
-  const content = await postChatCompletionsWithRetry(
-    body,
-    requireApiKey(),
-    RETRY_DELAYS_MS,
-    (u) => (usage = u),
-  );
-  if (ctx) {
-    recordAiUsage({ ...ctx, model, usage, durationMs: Date.now() - startedAt, ok: true });
-  }
-  return content;
+  const params = buildRequest(model, prompt + "\n\nDOCUMENT TEXT:\n" + textContent, maxTokens);
+  return await run(params, ctx);
 }

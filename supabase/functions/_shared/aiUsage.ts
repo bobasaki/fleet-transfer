@@ -9,12 +9,15 @@
 // unit tests in vision.test.ts stay network-free: with no SUPABASE_URL in the
 // test runtime we return before the import ever runs.
 
-// Shape of the `usage` object OpenAI returns on a Chat Completions response.
-export interface OpenAiUsage {
-  prompt_tokens?: number;
-  completion_tokens?: number;
-  total_tokens?: number;
-  prompt_tokens_details?: { cached_tokens?: number };
+// Provider-neutral token counts for one model call. vision.ts maps the
+// provider's usage object onto this (see toTokenUsage there).
+//   inputTokens  — all input tokens, cached ones included
+//   outputTokens — generated tokens, thinking included
+//   cachedTokens — the subset of inputTokens served from the prompt cache
+export interface AiTokenUsage {
+  inputTokens: number;
+  outputTokens: number;
+  cachedTokens: number;
 }
 
 // Call-site context. functionName is required (it's the cost breakdown key);
@@ -27,7 +30,7 @@ export interface AiUsageContext {
 
 export interface AiUsageRow extends AiUsageContext {
   model: string;
-  usage: OpenAiUsage | undefined;
+  usage: AiTokenUsage | undefined;
   durationMs: number;
   ok: boolean;
 }
@@ -49,14 +52,14 @@ export async function logAiUsage(row: AiUsageRow): Promise<void> {
     );
     const client = createClient(url, key, { auth: { persistSession: false } });
 
-    const u = row.usage ?? {};
+    const u = row.usage ?? { inputTokens: 0, outputTokens: 0, cachedTokens: 0 };
     const { error } = await client.from("ai_usage").insert({
       function_name: row.functionName,
       model: row.model,
-      prompt_tokens: u.prompt_tokens ?? 0,
-      completion_tokens: u.completion_tokens ?? 0,
-      total_tokens: u.total_tokens ?? 0,
-      cached_tokens: u.prompt_tokens_details?.cached_tokens ?? 0,
+      prompt_tokens: u.inputTokens,
+      completion_tokens: u.outputTokens,
+      total_tokens: u.inputTokens + u.outputTokens,
+      cached_tokens: u.cachedTokens,
       duration_ms: row.durationMs,
       transfer_id: row.transferId ?? null,
       user_id: row.userId ?? null,
