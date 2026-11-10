@@ -44,3 +44,20 @@ export function toCroatian(detail: string): string {
   }
   return `${GENERIC} (detalj: ${raw})`;
 }
+
+// Diagnostic suffix for a submit fetch that failed without any HTTP response.
+// Browsers expose no net:: error code to JS, so size, time-to-failure and the
+// online flag are the only clues the driver can read back to us.
+export interface FetchFailureInfo {
+  name: string;
+  message: string;
+  bytes: number;
+  elapsedMs: number;
+  online: boolean;
+}
+
+export function fetchFailureDetail(i: FetchFailureInfo): string {
+  const mb = (i.bytes / 1024 / 1024).toFixed(2);
+  const secs = (i.elapsedMs / 1000).toFixed(1);
+  return `(detalj: ${i.name}: ${i.message} · ${mb} MB · ${secs} s · mreža: ${i.online ? "da" : "ne"})`;
+}

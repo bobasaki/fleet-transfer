@@ -17,7 +17,7 @@ import {
 import {
   buildSubmitPayload, validReceiptSlots, validTravelDocSlots,
 } from "../../lib/buildSubmitPayload";
-import { toCroatian } from "../../lib/errorMessages";
+import { toCroatian, fetchFailureDetail } from "../../lib/errorMessages";
 import { generatePutniNalog, type PutniNalogInput } from "../../lib/generatePutniNalog";
 import VehicleSection from "../components/transfer/VehicleSection";
 import OdometerSection from "../components/transfer/OdometerSection";
@@ -29,6 +29,7 @@ import TotalsSection from "../components/transfer/TotalsSection";
 import SubmitSection from "../components/transfer/SubmitSection";
 import SuccessPanel from "../components/transfer/SuccessPanel";
 import { compressImage } from "../../lib/compressImage";
+import { toMemoryFile, UnreadablePhotoError } from "../../lib/memoryFile";
 import { today } from "../../lib/format";
 import {
   fnUrl, authHdr, hasLowConf,
@@ -315,6 +316,9 @@ export default function TransferForm() {
     const tid = transferId || crypto.randomUUID();
     if (!transferId) setTransferId(tid);
     const nowSubmittedAt = new Date().toISOString();
+    // Set just before the submit fetch; read by the catch for diagnostics.
+    let sentBytes = 0;
+    let fetchStartedAt: number | null = null;
 
     try {
       const payload = buildPayload(tid);
@@ -373,20 +377,24 @@ export default function TransferForm() {
         }
       }
 
+      // In-memory copies: an unreadable picked file fails here with a named
+      // photo instead of an opaque "Failed to fetch" (see lib/memoryFile.ts).
       const fd = new FormData();
       fd.append("payload", JSON.stringify(payload));
-      fd.append("vehicle_hr", cVehicleHr);
-      if (showRot && cVehicleRot) fd.append("vehicle_rotation", cVehicleRot);
-      fd.append("odometer_start", cOdometerStart);
-      fd.append("odometer", cOdometer);
+      fd.append("vehicle_hr", await toMemoryFile(cVehicleHr, "vozilo HR"));
+      if (showRot && cVehicleRot) fd.append("vehicle_rotation", await toMemoryFile(cVehicleRot, "vozilo rotacija"));
+      fd.append("odometer_start", await toMemoryFile(cOdometerStart, "početno brojilo"));
+      fd.append("odometer", await toMemoryFile(cOdometer, "završno brojilo"));
 
       for (let i = 0; i < receiptEntries.length; i++) {
-        fd.append(`receipt_${receiptEntries[i].slotId}`, cReceipts[i]);
+        fd.append(`receipt_${receiptEntries[i].slotId}`, await toMemoryFile(cReceipts[i], `račun ${i + 1}`));
       }
       for (let i = 0; i < travelDocEntries.length; i++) {
-        fd.append(`travel_doc_${travelDocEntries[i].slotId}`, cTravelDocs[i]);
+        fd.append(`travel_doc_${travelDocEntries[i].slotId}`, await toMemoryFile(cTravelDocs[i], `putna isprava ${i + 1}`));
       }
 
+      sentBytes = totalBytes;
+      fetchStartedAt = Date.now();
       const httpRes = await fetch(fnUrl("submit_transfer"), {
         method: "POST",
         headers: authHdr(),
@@ -463,7 +471,21 @@ export default function TransferForm() {
       setSavePhase("saved");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : JSON.stringify(err);
-      setSaveError(toCroatian(msg));
+      // fetch() rejects with TypeError only when no HTTP response arrived.
+      const networkFailure = err instanceof TypeError && fetchStartedAt !== null;
+      setSaveError(
+        err instanceof UnreadablePhotoError
+          ? err.message
+          : networkFailure
+            ? `${toCroatian(msg)} ${fetchFailureDetail({
+                name: err.name,
+                message: msg,
+                bytes: sentBytes,
+                elapsedMs: Date.now() - fetchStartedAt!,
+                online: navigator.onLine,
+              })}`
+            : toCroatian(msg),
+      );
       setSavePhase("error");
       // Draft and photos are preserved for retry
     }

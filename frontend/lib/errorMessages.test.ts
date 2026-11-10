@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { toCroatian } from "./errorMessages";
+import { toCroatian, fetchFailureDetail } from "./errorMessages";
 
 const GENERIC = "Greška pri slanju — pokušaj ponovno.";
 
@@ -98,5 +98,25 @@ describe("toCroatian", () => {
   it("returns the bare generic message for empty input", () => {
     expect(toCroatian("")).toBe(GENERIC);
     expect(toCroatian("   ")).toBe(GENERIC);
+  });
+});
+
+describe("fetchFailureDetail", () => {
+  it("formats error, size in MB, seconds and online flag", () => {
+    expect(
+      fetchFailureDetail({
+        name: "TypeError",
+        message: "Failed to fetch",
+        bytes: 5 * 1024 * 1024,
+        elapsedMs: 12345,
+        online: true,
+      }),
+    ).toBe("(detalj: TypeError: Failed to fetch · 5.00 MB · 12.3 s · mreža: da)");
+  });
+
+  it("reports offline as 'ne'", () => {
+    expect(
+      fetchFailureDetail({ name: "TypeError", message: "Load failed", bytes: 0, elapsedMs: 0, online: false }),
+    ).toBe("(detalj: TypeError: Load failed · 0.00 MB · 0.0 s · mreža: ne)");
   });
 });
